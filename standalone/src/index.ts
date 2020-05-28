@@ -10,13 +10,23 @@ const app = express();
 app.use(express.static("public"));
 
 const webpackConfig = require("../../webpack.config");
+
+// add "webpack-hot-middleware/client" to start of array
+// this is done here so that the library can be run through webpack on its own
+// without dependency on the standalone library
+webpackConfig.entry.unshift("webpack-hot-middleware/client");
+
 const compiler = webpack(webpackConfig);
 app.use(
   webpackDevMiddleware(compiler, {
     publicPath: webpackConfig.output.publicPath,
   })
 );
-app.use(webpackHotMiddleware(compiler));
+app.use(
+  webpackHotMiddleware(compiler, {
+    path: "/__webpack_hmr",
+  })
+);
 
 const libraryPath = path.join(__dirname, "../../lib");
 app.use("/library", express.static(libraryPath));
