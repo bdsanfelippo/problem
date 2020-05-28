@@ -24,6 +24,7 @@ app.use(
 );
 app.use(
   webpackHotMiddleware(compiler, {
+    // have tried with and without this path
     path: "/__webpack_hmr",
   })
 );
